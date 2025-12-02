@@ -127,11 +127,22 @@ X_test["cluster_label"] = kmeans.predict(X_test)
 print("Cluster labels added!")
 
 # -------------------------------
-# 20% Split
+# Create 20% mini-dataset
+# -------------------------------
+X_mini, _, y_mini, _ = train_test_split(
+    X, y, test_size=0.80, random_state=42, stratify=y
+)
+
+print("Mini dataset shape:", X_mini.shape)
+
+# -------------------------------
+# Split mini-dataset into 80% train / 20% validation
 # -------------------------------
 X_train, X_val, y_train, y_val = train_test_split(
-    X, y, test_size=0.20, random_state=42, stratify=y
+    X_mini, y_mini, test_size=0.20, random_state=42, stratify=y_mini
 )
+
+print("Train shape:", X_train.shape, "Val shape:", X_val.shape)
 
 # -------------------------------
 # Scaling

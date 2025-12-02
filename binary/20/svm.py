@@ -125,11 +125,22 @@ X_test["cluster_label"] = kmeans.predict(X_test)
 print("Cluster labels added!")
 
 # -------------------------------
-# 20% train-test split
+# Create 20% mini-dataset
+# -------------------------------
+X_mini, _, y_mini, _ = train_test_split(
+    X, y, test_size=0.80, random_state=42, stratify=y
+)
+
+print("Mini dataset shape:", X_mini.shape)
+
+# -------------------------------
+# Split mini-dataset: 80% train / 20% validation
 # -------------------------------
 X_train, X_val, y_train, y_val = train_test_split(
-    X, y, test_size=0.20, random_state=42, stratify=y
+    X_mini, y_mini, test_size=0.20, random_state=42, stratify=y_mini
 )
+
+print("Train shape:", X_train.shape, "Val shape:", X_val.shape)
 
 # Scaling
 scaler = StandardScaler()
@@ -140,10 +151,6 @@ X_test_s = scaler.transform(X_test)
 # -------------------------------
 # Linear SVM with probability calibration
 # -------------------------------
-from sklearn.metrics import roc_auc_score
-from sklearn.svm import LinearSVC
-from sklearn.calibration import CalibratedClassifierCV
-
 base_svm = LinearSVC(
     C=1.0, 
     loss="hinge", 
